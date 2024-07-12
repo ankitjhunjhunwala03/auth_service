@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-auth
+  template:
+    metadata:
+      labels:
+        app: db-auth
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        env:
+        - name: POSTGRES_DB
+          value: auth_db
+        - name: POSTGRES_USER
+          value: auth_user
+        - name: POSTGRES_PASSWORD
+          value: auth_pass
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-auth
+spec:
+  selector:
+    app: db-auth
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
